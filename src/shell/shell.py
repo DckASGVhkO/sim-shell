@@ -97,8 +97,7 @@ def eval(cmdline, out):
         else:
             raise ValueError(f"unsupported application {app}")
 
-
-if __name__ == "__main__":
+def main():
     args_num = len(sys.argv) - 1
     if args_num > 0:
         if args_num != 2:
@@ -117,3 +116,6 @@ if __name__ == "__main__":
             eval(cmdline, out)
             while len(out) > 0:
                 print(out.popleft(), end="")
+
+if __name__ == "__main__":
+    main()

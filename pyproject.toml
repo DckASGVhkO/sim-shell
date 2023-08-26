@@ -1,0 +1,17 @@
+[project]
+name = "shell"
+version = "0.1"
+description = "A simple Shell in Python"
+readme = "README.md"
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+pysh = "shell:main"
+
+[tool.distutils.egg_info]
+egg_base = "dist"
+
+[tool.setuptools.packages.find]
+where = ["src"]
