@@ -1,10 +1,11 @@
 FROM ubuntu:latest
 
 ARG USERNAME=vscode
+
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
+    apt-get install -y sudo python3 python3-pip git && \
     useradd -ms /bin/bash $USERNAME
 
-USER $USERNAME
+echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-WORKDIR /home/vscode
+USER $USERNAME
