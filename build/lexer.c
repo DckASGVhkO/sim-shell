@@ -1,3 +1,5 @@
+
+#line 1 "lexer.rl"
 #include "parser.h"
 
 #include <limits.h>
@@ -27,28 +29,9 @@ char* copy_str(const char* src, bool rm_quot) {
     return dst;
 }
 
-%%{
-machine sh_parser;
 
-whitesp   = space | '\t' | '\n';
-arg       = alnum+;
-sing_quot = '\'' any* '\'';
-doub_quot = '\"' any* '\"';
-backquot  = '`' any* '`';
+#line 51 "lexer.rl"
 
-main := |*
-    whitesp*  => { ret = WHITESP; };
-    '|'       => { ret = PIPE; fbreak; };
-    ';'       => { ret = SEQ; fbreak; };
-    '<'       => { ret = REDIR_IN; fbreak; };
-    '>'       => { ret = REDIR_OUT; fbreak; };
-    arg       => { ret = ARG; yylval->lexeme = ts; fbreak; };
-    sing_quot => { ret = SING_QUOT; yylval->lexeme = copy_str(ts, true); fbreak; };
-    doub_quot => { ret = DOUB_QUOT; yylval->lexeme = copy_str(ts, true); fbreak; };
-    backquot  => { ret = BACKQUOT; yylval->lexeme = copy_str(ts, true); fbreak; };
-    whitesp*  => { ret = WHITESP; };
-*|;
-}%%
 
 int yylex(YYSTYPE* yylval) {
     char buffer[1024];

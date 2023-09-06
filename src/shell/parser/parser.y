@@ -47,34 +47,18 @@ void yyerror(const char* s) {
 }
 
 int main(int argc, char* argv[]) {
-    char input_buffer[256];
-    FILE* yyin = NULL;
-
-    while (1) {
-        printf("请输入命令：");
-        
-        if (scanf("%255[^\n]", input_buffer) != 1) {
-            fprintf(stderr, "Error: 无法读取输入\n");
-            break;
-        }
-
-        while (getchar() != '\n');
-
-        FILE* temp_file = tmpfile();
-        if (temp_file == NULL) {
-            perror("tmpfile");
+    if (argc > 1) {
+        yyin = fopen(argv[1], "r");
+        if (yyin == NULL) {
+            perror("fopen");
             return 1;
         }
-        fprintf(temp_file, "%s", input_buffer);
-        rewind(temp_file);
+    }
 
-        yyin = temp_file;
+    yyparse();
 
-        yyparse();
-
-        fclose(temp_file);
-
-        memset(input_buffer, 0, sizeof(input_buffer));
+    if (yyin != NULL) {
+        fclose(yyin);
     }
 
     return 0;
