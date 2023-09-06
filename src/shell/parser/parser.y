@@ -3,10 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+char* input;
 extern int yylex();
 extern int yyparse();
-extern FILE* yyin;
-
 void yyerror(const char* s);
 %}
 
@@ -48,18 +47,10 @@ void yyerror(const char* s) {
 
 int main(int argc, char* argv[]) {
     if (argc > 1) {
-        yyin = fopen(argv[1], "r");
-        if (yyin == NULL) {
-            perror("fopen");
-            return 1;
-        }
+        input = argv[1];
     }
 
     yyparse();
-
-    if (yyin != NULL) {
-        fclose(yyin);
-    }
 
     return 0;
 }

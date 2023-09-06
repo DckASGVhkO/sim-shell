@@ -4,11 +4,10 @@
 
 #include <limits.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-FILE* yyin;
+extern char* input;
 
 char* copy_str(const char* src, bool rm_quot) {
     size_t len = strlen(src);
@@ -30,23 +29,17 @@ char* copy_str(const char* src, bool rm_quot) {
 }
 
 
-#line 51 "lexer.rl"
+#line 50 "lexer.rl"
 
 
 int yylex(YYSTYPE* yylval) {
-    char buffer[1024];
-    size_t len = fread(buffer, 1, sizeof(buffer) - 1, yyin);
-
-    if (len == 0) {
+    if (input == NULL) {
         return 0;
     }
 
-    buffer[len] = '\0';
-
     int ret = INT_MAX;
-
-    const char* p = buffer;
-    const char* pe = buffer + len;
+    const char* p = input;
+    const char* pe = input + strlen(input);
     const char* eof = pe;
 
     if (p == eof) {

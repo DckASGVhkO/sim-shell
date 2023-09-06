@@ -27,7 +27,8 @@
 
 extern int yylex();
 extern int yyparse();
-extern FILE* yyin;
+
+char* input;
 
 void yyerror(const char* s);
 #ifdef YYSTYPE
@@ -36,13 +37,13 @@ void yyerror(const char* s);
 #endif
 #ifndef YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
-#line 13 "parser.y"
+#line 14 "parser.y"
 typedef union YYSTYPE {
     int token;
     const char* lexeme;
 } YYSTYPE;
 #endif /* !YYSTYPE_IS_DECLARED */
-#line 46 "/Users/roger/Desktop/shell/build/parser.c"
+#line 47 "/Users/roger/Desktop/shell/build/parser.c"
 
 /* compatibility with bison */
 #ifdef YYPARSE_PARAM
@@ -383,7 +384,7 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 44 "parser.y"
+#line 45 "parser.y"
 
 void yyerror(const char* s) {
     fprintf(stderr, "Error: %s at token '%s'\n", s, yylval.lexeme);
@@ -391,22 +392,14 @@ void yyerror(const char* s) {
 
 int main(int argc, char* argv[]) {
     if (argc > 1) {
-        yyin = fopen(argv[1], "r");
-        if (yyin == NULL) {
-            perror("fopen");
-            return 1;
-        }
+        input = argv[1];
     }
 
     yyparse();
 
-    if (yyin != NULL) {
-        fclose(yyin);
-    }
-
     return 0;
 }
-#line 410 "/Users/roger/Desktop/shell/build/parser.c"
+#line 403 "/Users/roger/Desktop/shell/build/parser.c"
 
 /* For use in generated program */
 #define yydepth (int)(yystack.s_mark - yystack.s_base)
