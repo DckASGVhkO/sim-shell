@@ -1,53 +1,79 @@
-#include "lexer.h"
+#include "parser.h"
 
+#include <limits.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-
-void handler(LexerState* state) {
-    printf("Token: %d, Lexeme: %s\n", state->token, state->lexeme);
-}
-
-void emit(LexerState* state, int token, char* lexeme) {
-    state->token = token;
-    state->lexeme = lexeme;
-    handler(state);
-}
 
 char* copy_str(const char* src, bool rm_quot) {
     size_t len = strlen(src);
-    size_t offset = rm_quot ? 1 : 0;
-    size_t new_len = len - 2 * offset;
+    char* dst;
 
-    char* dst = malloc(new_len + 1);
-    if (dst == NULL) return NULL;
+    if (rm_quot) {
+        len -= 2;
+        dst = malloc(len + 1);
+        if (dst == NULL) { return NULL; }
+        strncpy(dst, src + 1, len);
+    } else {
+        dst = malloc(len + 1);
+        if (dst == NULL) { return NULL; }
+        strncpy(dst, src, len);
+    }
 
-    strncpy(dst, src + offset, new_len);
-    dst[new_len] = '\0';
-
+    dst[len] = '\0';
     return dst;
 }
 
 %%{
-  machine sh_parser;
+machine sh_parser;
+write data;
 
-  action act_ign { }
-  action act_pipe { emit($lexer_state, handler, PIPE, NULL); }
-  action act_seq { emit($lexer_state, handler, SEQ, NULL); }
-  action act_redir_in { emit($lexer_state, handler, REDIR_IN, NULL); }
-  action act_redir_out { emit($lexer_state, handler, REDIR_OUT, NULL); }
-  action act_arg { emit($lexer_state, handler, ARGUMENT, copy_str(yytext, false)); }
-  action act_sing_quot { emit($lexer_state, handler, SING_QUOT, copy_str(yytext, true)); }
-  action act_doub_quot { emit($lexer_state, handler, DOUB_QUOT, copy_str(yytext, true)); }
-  action act_backquot { emit($lexer_state, handler, BACKQUOT, copy_str(yytext, true)); }
+whitesp   = space | '\t' | '\n';
+arg       = alnum+;
+sing_quot = '\'' any* '\'';
+doub_quot = '\"' any* '\"';
+backquot  = '`' any* '`';
 
-  whitesp = space | '\t' | '\n' @act_ign;
-  arg = alnum+ @act_arg;
-  sing_quot = "'" any* "'" @act_sing_quot;
-  doub_quot = "\"" any* "\"" @act_doub_quot;
-  backquot = "`" any* "`" @act_backquot;
-
-  main := whitesp* | '|' @act_pipe | ';' @act_seq | '<' @act_redir_in | '>' @act_redir_out
-         | arg | sing_quot | doub_quot | backquot | whitesp*;
+main := |*
+    whitesp*  => { ret = WHITESP; };
+    '|'       => { ret = PIPE; fbreak; };
+    ';'       => { ret = SEQ; fbreak; };
+    '<'       => { ret = REDIR_IN; fbreak; };
+    '>'       => { ret = REDIR_OUT; fbreak; };
+    arg       => { ret = ARG; yylval->lexeme = ts; fbreak; };
+    sing_quot => { ret = SING_QUOT; yylval->lexeme = copy_str(ts, true); fbreak; };
+    doub_quot => { ret = DOUB_QUOT; yylval->lexeme = copy_str(ts, true); fbreak; };
+    backquot  => { ret = BACKQUOT; yylval->lexeme = copy_str(ts, true); fbreak; };
+    whitesp*  => { ret = WHITESP; };
+*|;
 }%%
+
+int yylex(YYSTYPE* yylval, const char* str) {
+    if (str == NULL) {
+        fprintf(stderr, "Error: Input string is NULL.\n");
+        return 0;
+    }
+
+    int ret = INT_MAX;
+    int cs, act;
+    const char* ts;
+    const char* te;
+
+    (void) sh_parser_first_final;
+    (void) sh_parser_error;
+    (void) sh_parser_en_main;
+
+%% write init;
+    const char* p = str; 
+    const char* pe = str + strlen(str);
+    const char* eof = pe;
+
+%% write exec;
+
+    if (p == eof) {
+        ret = 0;
+    }
+
+    return ret == INT_MAX ? 0 : ret;
+}

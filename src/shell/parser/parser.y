@@ -1,63 +1,81 @@
 %{
-#include "lexer.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 extern int yylex();
-extern int yyparse(LexerState* state);
+extern int yyparse();
 extern FILE* yyin;
 
-void yyerror(LexerState* state, const char* s);
+void yyerror(const char* s);
 %}
 
-%parse-param { LexerState* state }
-
 %union {
-  char *str;
+    int token;
+    const char* lexeme;
 }
 
-%token <str> PIPE SEQ REDIRECTION_IN REDIRECTION_OUT ARGUMENT SINGLE_QUOTED DOUBLE_QUOTED BACKQUOTED
+%token <lexeme> WHITESP PIPE SEQ REDIR_IN REDIR_OUT ARG SING_QUOT DOUB_QUOT BACKQUOT
 
 %left SEQ
 %left PIPE
 
 %%
 
-command : /* empty */
-        | command PIPE command %prec PIPE
-        | command SEQ command %prec SEQ
-        | simple_command
-        ;
+cmd : /* empty */
+    | cmd PIPE cmd %prec PIPE
+    | cmd SEQ cmd %prec SEQ
+    | simp_cmd
+    ;
 
-simple_command : argument
-               | simple_command argument
-               | simple_command REDIRECTION_IN argument
-               | simple_command REDIRECTION_OUT argument
-               ;
-
-argument : ARGUMENT
-         | SINGLE_QUOTED
-         | DOUBLE_QUOTED
-         | BACKQUOTED
+simp_cmd : arg
+         | simp_cmd arg
+         | simp_cmd REDIR_IN arg
+         | simp_cmd REDIR_OUT arg
          ;
+
+arg : ARG
+    | SING_QUOT
+    | DOUB_QUOT
+    | BACKQUOT
+    ;
 
 %%
 
-void yyerror(LexerState *state, const char* s) {
-  fprintf(stderr, "Error: %s at token '%s'\n", s, state->lexeme);
+void yyerror(const char* s) {
+    fprintf(stderr, "Error: %s at token '%s'\n", s, yylval.lexeme);
 }
 
 int main(int argc, char* argv[]) {
-    LexerState state;
-    if (argc > 1) {
-      yyin = fopen(argv[1], "r");
-      if (yyin == NULL) {
-        perror("fopen");
-        return 1;
-      }
+    char input_buffer[256];
+    FILE* yyin = NULL;
+
+    while (1) {
+        printf("请输入命令：");
+        
+        if (scanf("%255[^\n]", input_buffer) != 1) {
+            fprintf(stderr, "Error: 无法读取输入\n");
+            break;
+        }
+
+        while (getchar() != '\n');
+
+        FILE* temp_file = tmpfile();
+        if (temp_file == NULL) {
+            perror("tmpfile");
+            return 1;
+        }
+        fprintf(temp_file, "%s", input_buffer);
+        rewind(temp_file);
+
+        yyin = temp_file;
+
+        yyparse();
+
+        fclose(temp_file);
+
+        memset(input_buffer, 0, sizeof(input_buffer));
     }
 
-    yyparse(&state);
     return 0;
 }

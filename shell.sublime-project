@@ -1,0 +1,19 @@
+{
+    "folders":
+    [
+        {
+            "path": ".",
+        }
+    ],
+    "build_systems":
+    [
+        {
+            "name": "Test parser",
+            "cmd": ["python3", "scripts/build_parser.py"],
+            "working_dir": "$project_path",
+        }
+    ],
+    "debugger_configurations":
+    [
+	],
+}
