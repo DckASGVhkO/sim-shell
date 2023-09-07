@@ -8,7 +8,7 @@
 char* input;
 extern int yylex(YYSTYPE yylval);
 extern int yyparse();
-void yyerror(const char* msg);
+void yyerror(YYSTYPE yylval, const char* msg);
 %}
 
 %lex-param { YYSTYPE yylval }
@@ -18,21 +18,43 @@ void yyerror(const char* msg);
     const char* lexeme;
 }
 
-%token <lexeme> WHITESP PIPE SEQ REDIR_IN REDIR_OUT ARG SING_QUOT DOUB_QUOT BACKQUOT
+%token <lexeme> WHITESP PIPE SEQ REDIR_IN REDIR_OUT ARG SING_QUOT DOUB_QUOT BACKQUOT UNKNOWN
 
-%left SEQ
-%left PIPE
+//%left SEQ
+//%left PIPE
 
 %%
-cmd : cmd PIPE cmd %prec PIPE
-    | cmd SEQ cmd %prec SEQ
-    | simp_cmd
+//cmd : cmd PIPE cmd %prec PIPE
+//    | cmd SEQ cmd %prec SEQ
+//    | simp_cmd
+//    ;
+
+//simp_cmd : arg
+//         | simp_cmd arg
+//         | simp_cmd REDIR_IN arg
+//         | simp_cmd REDIR_OUT arg
+//         | WHITESP
+//         ;
+
+//arg : ARG
+//    | SING_QUOT
+//    | DOUB_QUOT
+//    | BACKQUOT
+//    ;
+
+pipe : cmd
+     | pipe PIPE cmd
+     ;
+
+cmd : /* empty */
+    | cmd_elem
+    | cmd cmd_elem
     ;
 
-simp_cmd : arg
-         | simp_cmd arg
-         | simp_cmd REDIR_IN arg
-         | simp_cmd REDIR_OUT arg
+cmd_elem : arg
+         | REDIR_IN arg
+         | REDIR_OUT arg
+         | WHITESP
          ;
 
 arg : ARG
@@ -42,7 +64,7 @@ arg : ARG
     ;
 %%
 
-void yyerror(const char* msg) {
+void yyerror(YYSTYPE yylval, const char* msg) {
     fprintf(stderr, "Error: %s near '%s'\n", msg, yylval.lexeme);
     exit(EXIT_FAILURE);
 }

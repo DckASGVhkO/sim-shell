@@ -10,6 +10,8 @@
 extern char* input;
 static const char* p = NULL;
 
+extern void yyerror(const char *msg);
+
 // char* copy_str(const char* src, bool rm_quot) {
 //     size_t len = strlen(src);
 //     char* dst;
@@ -54,7 +56,6 @@ machine sh_parser;
 write data;
 
 whitesp   = space | '\t' | '\n';
-arg       = alnum+;
 sing_quot = '\'' any* '\'';
 doub_quot = '\"' any* '\"';
 backquot  = '`' any* '`';
@@ -65,10 +66,11 @@ main := |*
     ';'       => { ret = SEQ; yylval.lexeme = ";"; fbreak; };
     '<'       => { ret = REDIR_IN; yylval.lexeme = "<"; fbreak; };
     '>'       => { ret = REDIR_OUT; yylval.lexeme = ">"; fbreak; };
-    arg       => { ret = ARG; printf("ARG\t"); yylval.lexeme = copy_str(ts, te, false); fbreak; };
+    [^'"`]+    => { ret = ARG; yylval.lexeme = copy_str(ts, te, false); fbreak; };
     sing_quot => { ret = SING_QUOT; yylval.lexeme = copy_str(ts, te, true); fbreak; };
     doub_quot => { ret = DOUB_QUOT; yylval.lexeme = copy_str(ts, te, true); fbreak; };
     backquot  => { ret = BACKQUOT; yylval.lexeme = copy_str(ts, te, true); fbreak; };
+    any       => { ret = UNKNOWN; yylval.lexeme = copy_str(ts, te, false); fbreak; };
 *|;
 }%%
 
@@ -96,6 +98,10 @@ int yylex(YYSTYPE yylval) {
     }
 
 %% write exec;
+
+    if (ret == UNKNOWN) {
+        yyerror(yylval, "Syntax error");
+    }
 
     return ret == INT_MAX ? 0 : ret;
 }

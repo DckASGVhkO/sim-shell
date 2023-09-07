@@ -30,7 +30,7 @@
 char* input;
 extern int yylex(YYSTYPE yylval);
 extern int yyparse();
-void yyerror(const char* msg);
+void yyerror(YYSTYPE yylval, const char* msg);
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
@@ -89,36 +89,37 @@ extern int YYPARSE_DECL();
 #define SING_QUOT 263
 #define DOUB_QUOT 264
 #define BACKQUOT 265
+#define UNKNOWN 266
 #define YYERRCODE 256
 typedef int YYINT;
 static const YYINT yylhs[] = {                           -1,
-    0,    0,    0,    1,    1,    1,    1,    2,    2,    2,
-    2,
+    0,    0,    1,    1,    1,    2,    2,    2,    2,    3,
+    3,    3,    3,
 };
 static const YYINT yylen[] = {                            2,
-    3,    3,    1,    1,    2,    3,    3,    1,    1,    1,
-    1,
+    1,    3,    0,    1,    2,    1,    2,    2,    1,    1,
+    1,    1,    1,
 };
 static const YYINT yydefred[] = {                         0,
-    8,    9,   10,   11,    0,    0,    4,    0,    0,    0,
-    0,    5,    1,    0,    6,    7,
+    9,    0,    0,   10,   11,   12,   13,    0,    0,    4,
+    6,    7,    8,    0,    5,    0,
 };
 #if defined(YYDESTRUCT_CALL) || defined(YYSTYPE_TOSTRING)
 static const YYINT yystos[] = {                           0,
-  262,  263,  264,  265,  267,  268,  269,  258,  259,  260,
-  261,  269,  267,  267,  269,  269,
+  257,  260,  261,  262,  263,  264,  265,  268,  269,  270,
+  271,  271,  271,  258,  270,  269,
 };
 #endif /* YYDESTRUCT_CALL || YYSTYPE_TOSTRING */
-static const YYINT yydgoto[] = {                          5,
-    6,    7,
+static const YYINT yydgoto[] = {                          8,
+    9,   10,   11,
 };
-static const YYINT yysindex[] = {                      -247,
-    0,    0,    0,    0, -248, -257,    0, -247, -247, -247,
- -247,    0,    0, -258,    0,    0,
+static const YYINT yysindex[] = {                      -253,
+    0, -248, -248,    0,    0,    0,    0, -258, -253,    0,
+    0,    0,    0, -253,    0, -253,
 };
-static const YYINT yyrindex[] = {                         0,
-    0,    0,    0,    0,    0,    1,    0,    0,    0,    0,
-    0,    0,    0,    2,    0,    0,
+static const YYINT yyrindex[] = {                         1,
+    0,    0,    0,    0,    0,    0,    0,    0,    2,    0,
+    0,    0,    0,    1,    0,    3,
 };
 #if YYBTYACC
 static const YYINT yycindex[] = {                         0,
@@ -126,13 +127,13 @@ static const YYINT yycindex[] = {                         0,
     0,    0,    0,    0,    0,    0,
 };
 #endif
-static const YYINT yygindex[] = {                        11,
-    0,    3,
+static const YYINT yygindex[] = {                         0,
+   -9,   -3,   16,
 };
 #define YYTABLESIZE 261
-static const YYINT yytable[] = {                          8,
-    3,    2,   10,   11,    1,    2,    3,    4,   12,    8,
-    9,    0,   15,   16,    1,    2,    3,    4,   13,   14,
+static const YYINT yytable[] = {                         14,
+    3,    1,    2,    1,   16,   15,    2,    3,    4,    5,
+    6,    7,   15,    4,    5,    6,    7,   12,   13,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -156,12 +157,12 @@ static const YYINT yytable[] = {                          8,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    3,    3,
+    0,    0,    0,    0,    0,    0,    0,    0,    3,    1,
     2,
 };
 static const YYINT yycheck[] = {                        258,
-    0,    0,  260,  261,  262,  263,  264,  265,    6,  258,
-  259,   -1,   10,   11,  262,  263,  264,  265,    8,    9,
+    0,    0,    0,  257,   14,    9,  260,  261,  262,  263,
+  264,  265,   16,  262,  263,  264,  265,    2,    3,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
@@ -185,8 +186,8 @@ static const YYINT yycheck[] = {                        258,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  258,  259,
-  259,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  258,  258,
+  258,
 };
 #if YYBTYACC
 static const YYINT yyctable[] = {                        -1,
@@ -218,12 +219,12 @@ static const YYINT yyctable[] = {                        -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
 };
 #endif
-#define YYFINAL 5
+#define YYFINAL 8
 #ifndef YYDEBUG
 #define YYDEBUG 0
 #endif
-#define YYMAXTOKEN 265
-#define YYUNDFTOKEN 270
+#define YYMAXTOKEN 266
+#define YYUNDFTOKEN 272
 #define YYTRANSLATE(a) ((a) > YYMAXTOKEN ? YYUNDFTOKEN : (a))
 #if YYDEBUG
 static const char *const yyname[] = {
@@ -235,18 +236,20 @@ static const char *const yyname[] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"error","WHITESP","PIPE","SEQ","REDIR_IN",
-"REDIR_OUT","ARG","SING_QUOT","DOUB_QUOT","BACKQUOT","$accept","cmd","simp_cmd",
-"arg","illegal-symbol",
+"REDIR_OUT","ARG","SING_QUOT","DOUB_QUOT","BACKQUOT","UNKNOWN","$accept","pipe",
+"cmd","cmd_elem","arg","illegal-symbol",
 };
 static const char *const yyrule[] = {
-"$accept : cmd",
-"cmd : cmd PIPE cmd",
-"cmd : cmd SEQ cmd",
-"cmd : simp_cmd",
-"simp_cmd : arg",
-"simp_cmd : simp_cmd arg",
-"simp_cmd : simp_cmd REDIR_IN arg",
-"simp_cmd : simp_cmd REDIR_OUT arg",
+"$accept : pipe",
+"pipe : cmd",
+"pipe : pipe PIPE cmd",
+"cmd :",
+"cmd : cmd_elem",
+"cmd : cmd cmd_elem",
+"cmd_elem : arg",
+"cmd_elem : REDIR_IN arg",
+"cmd_elem : REDIR_OUT arg",
+"cmd_elem : WHITESP",
 "arg : ARG",
 "arg : SING_QUOT",
 "arg : DOUB_QUOT",
@@ -382,9 +385,9 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 44 "parser.y"
+#line 66 "parser.y"
 
-void yyerror(const char* msg) {
+void yyerror(YYSTYPE yylval, const char* msg) {
     fprintf(stderr, "Error: %s near '%s'\n", msg, yylval.lexeme);
     exit(EXIT_FAILURE);
 }
@@ -398,7 +401,7 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-#line 402 "/Users/roger/Desktop/shell/build/parser.c"
+#line 405 "/Users/roger/Desktop/shell/build/parser.c"
 
 /* For use in generated program */
 #define yydepth (int)(yystack.s_mark - yystack.s_base)

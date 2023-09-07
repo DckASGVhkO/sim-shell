@@ -10,6 +10,7 @@
 #define SING_QUOT 263
 #define DOUB_QUOT 264
 #define BACKQUOT 265
+#define UNKNOWN 266
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
