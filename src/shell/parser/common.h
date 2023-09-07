@@ -3,7 +3,7 @@
 
 typedef struct {
     const char* lexeme;
-    char* input;
+    const char* input;
 } Ctx;
 
 int yylex(Ctx* ctx);

@@ -16,12 +16,10 @@
 %parse-param { Ctx* ctx }
 
 %%
-
 pipe : cmd | pipe PIPE cmd;
 cmd : /* empty */ | cmd_elem | cmd cmd_elem;
 cmd_elem : arg | REDIR_IN arg | REDIR_OUT arg | WHITESP;
 arg : ARG | SING_QUOT | DOUB_QUOT | BACKQUOT;
-
 %%
 
 void yyerror(Ctx* ctx, const char* msg) {
@@ -33,7 +31,7 @@ int main(int argc, char* argv[]) {
     Ctx ctx;
     if (argc > 1) {
         ctx.input = argv[1];
+        yyparse(&ctx);
     }
-    yyparse(&ctx);
     return 0;
 }

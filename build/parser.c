@@ -379,7 +379,7 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 26 "parser.y"
+#line 24 "parser.y"
 
 void yyerror(Ctx* ctx, const char* msg) {
     fprintf(stderr, "Error: %s near %s\n", msg, ctx->lexeme);
@@ -390,8 +390,8 @@ int main(int argc, char* argv[]) {
     Ctx ctx;
     if (argc > 1) {
         ctx.input = argv[1];
+        yyparse(&ctx);
     }
-    yyparse(&ctx);
     return 0;
 }
 #line 398 "/Users/roger/Desktop/shell/build/parser.c"
