@@ -24,8 +24,7 @@ void yyerror(const char* msg);
 %left PIPE
 
 %%
-cmd : /* empty */
-    | cmd PIPE cmd %prec PIPE
+cmd : cmd PIPE cmd %prec PIPE
     | cmd SEQ cmd %prec SEQ
     | simp_cmd
     ;
@@ -40,12 +39,11 @@ arg : ARG
     | SING_QUOT
     | DOUB_QUOT
     | BACKQUOT
-    | error { yyerror("Invalid argument"); }
     ;
 %%
 
 void yyerror(const char* msg) {
-    fprintf(stderr, "Error: %s at token '%s'\n", msg, yylval.lexeme);
+    fprintf(stderr, "Error: %s near '%s'\n", msg, yylval.lexeme);
     exit(EXIT_FAILURE);
 }
 
