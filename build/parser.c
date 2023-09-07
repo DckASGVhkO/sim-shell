@@ -21,29 +21,23 @@
 #define YYPURE 0
 
 #line 2 "parser.y"
+#include "common.h"
 #include "parser.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-char* input;
-extern int yylex(YYSTYPE* yylval);
-extern int yyparse();
-void yyerror(YYSTYPE* yylval, const char* msg);
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
 #endif
 #ifndef YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
-#line 16 "parser.y"
+#line 9 "parser.y"
 typedef union YYSTYPE {
-    int token;
     const char* lexeme;
 } YYSTYPE;
 #endif /* !YYSTYPE_IS_DECLARED */
-#line 47 "/Users/roger/Desktop/shell/build/parser.c"
+#line 41 "/Users/roger/Desktop/shell/build/parser.c"
 
 /* compatibility with bison */
 #ifdef YYPARSE_PARAM
@@ -54,7 +48,7 @@ typedef union YYSTYPE {
 #  define YYPARSE_DECL() yyparse(void *YYPARSE_PARAM)
 # endif
 #else
-# define YYPARSE_DECL() yyparse(void)
+# define YYPARSE_DECL() yyparse(Ctx*ctx)
 #endif
 
 /* Parameters sent to lex. */
@@ -62,8 +56,8 @@ typedef union YYSTYPE {
 # define YYLEX_DECL() yylex(void *YYLEX_PARAM)
 # define YYLEX yylex(YYLEX_PARAM)
 #else
-# define YYLEX_DECL() yylex(YYSTYPE yylval)
-# define YYLEX yylex(yylval)
+# define YYLEX_DECL() yylex(Ctx*ctx)
+# define YYLEX yylex(ctx)
 #endif
 
 #if !(defined(yylex) || defined(YYSTATE))
@@ -72,10 +66,10 @@ int YYLEX_DECL();
 
 /* Parameters sent to yyerror. */
 #ifndef YYERROR_DECL
-#define YYERROR_DECL() yyerror(const char *s)
+#define YYERROR_DECL() yyerror(Ctx*ctx, const char *s)
 #endif
 #ifndef YYERROR_CALL
-#define YYERROR_CALL(msg) yyerror(msg)
+#define YYERROR_CALL(msg) yyerror(ctx, msg)
 #endif
 
 extern int YYPARSE_DECL();
@@ -385,23 +379,22 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 66 "parser.y"
+#line 26 "parser.y"
 
-void yyerror(YYSTYPE* yylval, const char* msg) {
-    fprintf(stderr, "Error: %s near '%s'\n", msg, yylval->lexeme);
+void yyerror(Ctx* ctx, const char* msg) {
+    fprintf(stderr, "Error: %s near %s\n", msg, ctx->lexeme);
     exit(EXIT_FAILURE);
 }
 
 int main(int argc, char* argv[]) {
+    Ctx ctx;
     if (argc > 1) {
-        input = argv[1];
+        ctx.input = argv[1];
     }
-
-    yyparse();
-
+    yyparse(&ctx);
     return 0;
 }
-#line 405 "/Users/roger/Desktop/shell/build/parser.c"
+#line 398 "/Users/roger/Desktop/shell/build/parser.c"
 
 /* For use in generated program */
 #define yydepth (int)(yystack.s_mark - yystack.s_base)

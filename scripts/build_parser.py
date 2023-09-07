@@ -26,7 +26,7 @@ def build_parser():
     run_cmd("byacc -d -o " + os.path.join(build_dir, "parser.c") + " parser.y")
 
     os.chdir(build_dir)
-    run_cmd("gcc -Wall -Wextra -O3 -flto -o sh_parser lexer.c parser.c")
+    run_cmd("gcc -Wall -Wextra -O3 -flto -o sh_parser lexer.c parser.c -I" + parser_dir)
 
 if __name__ == "__main__":
     build_parser()

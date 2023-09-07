@@ -18,7 +18,6 @@
 #ifndef YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
 typedef union YYSTYPE {
-    int token;
     const char* lexeme;
 } YYSTYPE;
 #endif /* !YYSTYPE_IS_DECLARED */

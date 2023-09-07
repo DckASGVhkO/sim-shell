@@ -1,60 +1,31 @@
 
 #line 1 "lexer.rl"
+#include "common.h"
 #include "parser.h"
-
-#include <stdio.h>
 
 #include <limits.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-extern char* input;
 static const char* p = NULL;
-
-extern void yyerror(YYSTYPE* yylval, const char* msg);
-
-// char* copy_str(const char* src, bool rm_quot) {
-//     size_t len = strlen(src);
-//     char* dst;
-
-//     if (rm_quot) {
-//         len -= 2;
-//         dst = malloc(len + 1);
-//         if (dst == NULL) { return NULL; }
-//         strncpy(dst, src + 1, len);
-//     } else {
-//         dst = malloc(len + 1);
-//         if (dst == NULL) { return NULL; }
-//         strncpy(dst, src, len);
-//     }
-
-//     dst[len] = '\0';
-//     return dst;
-// }
 
 char* copy_str(const char* start, const char* end, bool rm_quot) {
     size_t len = end - start;
-    char* dst;
-
     if (rm_quot) {
         len -= 2;
         start += 1;
     }
-
-    dst = malloc(len + 1);
-    if (dst == NULL) {
-        return NULL;
-    }
-
+    char* dst = malloc(len + 1);
+    if (dst == NULL) return NULL;
     memcpy(dst, start, len);
     dst[len] = '\0';
-
     return dst;
 }
 
 
-#line 58 "/Users/roger/Desktop/shell/build/lexer.c"
+#line 29 "/Users/roger/Desktop/shell/build/lexer.c"
 static const int sh_parser_start = 3;
 static const int sh_parser_first_final = 3;
 static const int sh_parser_error = -1;
@@ -62,12 +33,11 @@ static const int sh_parser_error = -1;
 static const int sh_parser_en_main = 3;
 
 
-#line 75 "lexer.rl"
+#line 46 "lexer.rl"
 
 
-int yylex(YYSTYPE* yylval) {
-    int ret = INT_MAX;
-    int cs, act;
+int yylex(Ctx* ctx) {
+    int ret = INT_MAX, cs, act;
     const char* ts;
     const char* te;
 
@@ -76,7 +46,7 @@ int yylex(YYSTYPE* yylval) {
     (void) sh_parser_en_main;
 
 
-#line 80 "/Users/roger/Desktop/shell/build/lexer.c"
+#line 50 "/Users/roger/Desktop/shell/build/lexer.c"
 	{
 	cs = sh_parser_start;
 	ts = 0;
@@ -84,21 +54,14 @@ int yylex(YYSTYPE* yylval) {
 	act = 0;
 	}
 
-#line 88 "lexer.rl"
-    
-    if (p == NULL) {
-        p = input;
-    }
-    const char* pe = input + strlen(input);
+#line 58 "lexer.rl"
+    if (p == NULL) p = ctx->input;
+    const char* pe = ctx->input + strlen(ctx->input);
     const char* eof = pe;
+    
+    if (p == eof) return 0;
 
-    if (p == eof) {
-        printf("Reached end of input.\n");
-        return 0;
-    }
-
-
-#line 102 "/Users/roger/Desktop/shell/build/lexer.c"
+#line 65 "/Users/roger/Desktop/shell/build/lexer.c"
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -108,37 +71,37 @@ tr0:
 #line 1 "NONE"
 	{	switch( act ) {
 	case 2:
-	{{p = ((te))-1;} ret = PIPE; yylval->lexeme = "|"; {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = PIPE; ctx->lexeme = "|"; printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	case 3:
-	{{p = ((te))-1;} ret = SEQ; yylval->lexeme = ";"; {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = SEQ; ctx->lexeme = ";"; printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	case 4:
-	{{p = ((te))-1;} ret = REDIR_IN; yylval->lexeme = "<"; {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = REDIR_IN; ctx->lexeme = "<"; printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	case 5:
-	{{p = ((te))-1;} ret = REDIR_OUT; yylval->lexeme = ">"; {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = REDIR_OUT; ctx->lexeme = ">"; printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	case 6:
-	{{p = ((te))-1;} ret = ARG; yylval->lexeme = copy_str(ts, te, false); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = ARG; ctx->lexeme = copy_str(ts, te, false); printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	case 7:
-	{{p = ((te))-1;} ret = SING_QUOT; yylval->lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = SING_QUOT; ctx->lexeme = copy_str(ts, te, true); printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	case 8:
-	{{p = ((te))-1;} ret = DOUB_QUOT; yylval->lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = DOUB_QUOT; ctx->lexeme = copy_str(ts, te, true); printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	case 9:
-	{{p = ((te))-1;} ret = BACKQUOT; yylval->lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = BACKQUOT; ctx->lexeme = copy_str(ts, te, true); printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	case 10:
-	{{p = ((te))-1;} ret = UNKNOWN; yylval->lexeme = copy_str(ts, te, false); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = UNKNOWN; ctx->lexeme = copy_str(ts, te, false); printf("%s\n", ctx->lexeme); {p++; cs = 3; goto _out;} }
 	break;
 	}
 	}
 	goto st3;
 tr16:
-#line 64 "lexer.rl"
+#line 35 "lexer.rl"
 	{te = p;p--;{ ret = WHITESP; }}
 	goto st3;
 st3:
@@ -149,7 +112,7 @@ st3:
 case 3:
 #line 1 "NONE"
 	{ts = p;}
-#line 153 "/Users/roger/Desktop/shell/build/lexer.c"
+#line 116 "/Users/roger/Desktop/shell/build/lexer.c"
 	switch( (*p) ) {
 		case 32: goto st5;
 		case 34: goto tr9;
@@ -166,38 +129,38 @@ case 3:
 tr7:
 #line 1 "NONE"
 	{te = p+1;}
-#line 69 "lexer.rl"
+#line 40 "lexer.rl"
 	{act = 6;}
 	goto st4;
 tr11:
 #line 1 "NONE"
 	{te = p+1;}
-#line 66 "lexer.rl"
+#line 37 "lexer.rl"
 	{act = 3;}
 	goto st4;
 tr12:
 #line 1 "NONE"
 	{te = p+1;}
-#line 67 "lexer.rl"
+#line 38 "lexer.rl"
 	{act = 4;}
 	goto st4;
 tr13:
 #line 1 "NONE"
 	{te = p+1;}
-#line 68 "lexer.rl"
+#line 39 "lexer.rl"
 	{act = 5;}
 	goto st4;
 tr15:
 #line 1 "NONE"
 	{te = p+1;}
-#line 65 "lexer.rl"
+#line 36 "lexer.rl"
 	{act = 2;}
 	goto st4;
 st4:
 	if ( ++p == pe )
 		goto _test_eof4;
 case 4:
-#line 201 "/Users/roger/Desktop/shell/build/lexer.c"
+#line 164 "/Users/roger/Desktop/shell/build/lexer.c"
 	switch( (*p) ) {
 		case 34: goto tr0;
 		case 39: goto tr0;
@@ -220,20 +183,20 @@ case 5:
 tr2:
 #line 1 "NONE"
 	{te = p+1;}
-#line 71 "lexer.rl"
+#line 42 "lexer.rl"
 	{act = 8;}
 	goto st6;
 tr9:
 #line 1 "NONE"
 	{te = p+1;}
-#line 73 "lexer.rl"
+#line 44 "lexer.rl"
 	{act = 10;}
 	goto st6;
 st6:
 	if ( ++p == pe )
 		goto _test_eof6;
 case 6:
-#line 237 "/Users/roger/Desktop/shell/build/lexer.c"
+#line 200 "/Users/roger/Desktop/shell/build/lexer.c"
 	if ( (*p) == 34 )
 		goto tr2;
 	goto st0;
@@ -247,20 +210,20 @@ case 0:
 tr4:
 #line 1 "NONE"
 	{te = p+1;}
-#line 70 "lexer.rl"
+#line 41 "lexer.rl"
 	{act = 7;}
 	goto st7;
 tr10:
 #line 1 "NONE"
 	{te = p+1;}
-#line 73 "lexer.rl"
+#line 44 "lexer.rl"
 	{act = 10;}
 	goto st7;
 st7:
 	if ( ++p == pe )
 		goto _test_eof7;
 case 7:
-#line 264 "/Users/roger/Desktop/shell/build/lexer.c"
+#line 227 "/Users/roger/Desktop/shell/build/lexer.c"
 	if ( (*p) == 39 )
 		goto tr4;
 	goto st1;
@@ -274,20 +237,20 @@ case 1:
 tr6:
 #line 1 "NONE"
 	{te = p+1;}
-#line 72 "lexer.rl"
+#line 43 "lexer.rl"
 	{act = 9;}
 	goto st8;
 tr14:
 #line 1 "NONE"
 	{te = p+1;}
-#line 73 "lexer.rl"
+#line 44 "lexer.rl"
 	{act = 10;}
 	goto st8;
 st8:
 	if ( ++p == pe )
 		goto _test_eof8;
 case 8:
-#line 291 "/Users/roger/Desktop/shell/build/lexer.c"
+#line 254 "/Users/roger/Desktop/shell/build/lexer.c"
 	if ( (*p) == 96 )
 		goto tr6;
 	goto st2;
@@ -327,11 +290,9 @@ case 2:
 	_out: {}
 	}
 
-#line 101 "lexer.rl"
+#line 64 "lexer.rl"
 
-    if (ret == UNKNOWN) {
-        yyerror(yylval, "Syntax error");
-    }
+    if (ret == UNKNOWN) yyerror(ctx, "Syntax error");
 
     return ret == INT_MAX ? 0 : ret;
 }
