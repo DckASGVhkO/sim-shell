@@ -12,7 +12,7 @@
 extern char* input;
 static const char* p = NULL;
 
-extern void yyerror(const char *msg);
+extern void yyerror(YYSTYPE* yylval, const char* msg);
 
 // char* copy_str(const char* src, bool rm_quot) {
 //     size_t len = strlen(src);
@@ -65,7 +65,7 @@ static const int sh_parser_en_main = 3;
 #line 75 "lexer.rl"
 
 
-int yylex(YYSTYPE yylval) {
+int yylex(YYSTYPE* yylval) {
     int ret = INT_MAX;
     int cs, act;
     const char* ts;
@@ -108,31 +108,31 @@ tr0:
 #line 1 "NONE"
 	{	switch( act ) {
 	case 2:
-	{{p = ((te))-1;} ret = PIPE; yylval.lexeme = "|"; {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = PIPE; yylval->lexeme = "|"; {p++; cs = 3; goto _out;} }
 	break;
 	case 3:
-	{{p = ((te))-1;} ret = SEQ; yylval.lexeme = ";"; {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = SEQ; yylval->lexeme = ";"; {p++; cs = 3; goto _out;} }
 	break;
 	case 4:
-	{{p = ((te))-1;} ret = REDIR_IN; yylval.lexeme = "<"; {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = REDIR_IN; yylval->lexeme = "<"; {p++; cs = 3; goto _out;} }
 	break;
 	case 5:
-	{{p = ((te))-1;} ret = REDIR_OUT; yylval.lexeme = ">"; {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = REDIR_OUT; yylval->lexeme = ">"; {p++; cs = 3; goto _out;} }
 	break;
 	case 6:
-	{{p = ((te))-1;} ret = ARG; yylval.lexeme = copy_str(ts, te, false); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = ARG; yylval->lexeme = copy_str(ts, te, false); {p++; cs = 3; goto _out;} }
 	break;
 	case 7:
-	{{p = ((te))-1;} ret = SING_QUOT; yylval.lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = SING_QUOT; yylval->lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
 	break;
 	case 8:
-	{{p = ((te))-1;} ret = DOUB_QUOT; yylval.lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = DOUB_QUOT; yylval->lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
 	break;
 	case 9:
-	{{p = ((te))-1;} ret = BACKQUOT; yylval.lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = BACKQUOT; yylval->lexeme = copy_str(ts, te, true); {p++; cs = 3; goto _out;} }
 	break;
 	case 10:
-	{{p = ((te))-1;} ret = UNKNOWN; yylval.lexeme = copy_str(ts, te, false); {p++; cs = 3; goto _out;} }
+	{{p = ((te))-1;} ret = UNKNOWN; yylval->lexeme = copy_str(ts, te, false); {p++; cs = 3; goto _out;} }
 	break;
 	}
 	}

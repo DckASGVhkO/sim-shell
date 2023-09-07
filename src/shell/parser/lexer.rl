@@ -10,7 +10,7 @@
 extern char* input;
 static const char* p = NULL;
 
-extern void yyerror(const char *msg);
+extern void yyerror(YYSTYPE* yylval, const char* msg);
 
 // char* copy_str(const char* src, bool rm_quot) {
 //     size_t len = strlen(src);
@@ -62,19 +62,19 @@ backquot  = '`' any* '`';
 
 main := |*
     whitesp*  => { ret = WHITESP; };
-    '|'       => { ret = PIPE; yylval.lexeme = "|"; fbreak; };
-    ';'       => { ret = SEQ; yylval.lexeme = ";"; fbreak; };
-    '<'       => { ret = REDIR_IN; yylval.lexeme = "<"; fbreak; };
-    '>'       => { ret = REDIR_OUT; yylval.lexeme = ">"; fbreak; };
-    [^'"`]+    => { ret = ARG; yylval.lexeme = copy_str(ts, te, false); fbreak; };
-    sing_quot => { ret = SING_QUOT; yylval.lexeme = copy_str(ts, te, true); fbreak; };
-    doub_quot => { ret = DOUB_QUOT; yylval.lexeme = copy_str(ts, te, true); fbreak; };
-    backquot  => { ret = BACKQUOT; yylval.lexeme = copy_str(ts, te, true); fbreak; };
-    any       => { ret = UNKNOWN; yylval.lexeme = copy_str(ts, te, false); fbreak; };
+    '|'       => { ret = PIPE; yylval->lexeme = "|"; fbreak; };
+    ';'       => { ret = SEQ; yylval->lexeme = ";"; fbreak; };
+    '<'       => { ret = REDIR_IN; yylval->lexeme = "<"; fbreak; };
+    '>'       => { ret = REDIR_OUT; yylval->lexeme = ">"; fbreak; };
+    [^'"`]+    => { ret = ARG; yylval->lexeme = copy_str(ts, te, false); fbreak; };
+    sing_quot => { ret = SING_QUOT; yylval->lexeme = copy_str(ts, te, true); fbreak; };
+    doub_quot => { ret = DOUB_QUOT; yylval->lexeme = copy_str(ts, te, true); fbreak; };
+    backquot  => { ret = BACKQUOT; yylval->lexeme = copy_str(ts, te, true); fbreak; };
+    any       => { ret = UNKNOWN; yylval->lexeme = copy_str(ts, te, false); fbreak; };
 *|;
 }%%
 
-int yylex(YYSTYPE yylval) {
+int yylex(YYSTYPE* yylval) {
     int ret = INT_MAX;
     int cs, act;
     const char* ts;

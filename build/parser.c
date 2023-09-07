@@ -28,9 +28,9 @@
 #include <string.h>
 
 char* input;
-extern int yylex(YYSTYPE yylval);
+extern int yylex(YYSTYPE* yylval);
 extern int yyparse();
-void yyerror(YYSTYPE yylval, const char* msg);
+void yyerror(YYSTYPE* yylval, const char* msg);
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
@@ -387,8 +387,8 @@ static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
 #line 66 "parser.y"
 
-void yyerror(YYSTYPE yylval, const char* msg) {
-    fprintf(stderr, "Error: %s near '%s'\n", msg, yylval.lexeme);
+void yyerror(YYSTYPE* yylval, const char* msg) {
+    fprintf(stderr, "Error: %s near '%s'\n", msg, yylval->lexeme);
     exit(EXIT_FAILURE);
 }
 

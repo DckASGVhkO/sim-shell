@@ -6,9 +6,9 @@
 #include <string.h>
 
 char* input;
-extern int yylex(YYSTYPE yylval);
+extern int yylex(YYSTYPE* yylval);
 extern int yyparse();
-void yyerror(YYSTYPE yylval, const char* msg);
+void yyerror(YYSTYPE* yylval, const char* msg);
 %}
 
 %lex-param { YYSTYPE yylval }
@@ -64,8 +64,8 @@ arg : ARG
     ;
 %%
 
-void yyerror(YYSTYPE yylval, const char* msg) {
-    fprintf(stderr, "Error: %s near '%s'\n", msg, yylval.lexeme);
+void yyerror(YYSTYPE* yylval, const char* msg) {
+    fprintf(stderr, "Error: %s near '%s'\n", msg, yylval->lexeme);
     exit(EXIT_FAILURE);
 }
 
