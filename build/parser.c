@@ -21,23 +21,23 @@
 #define YYPURE 0
 
 #line 2 "parser.y"
+#include "parser.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-extern int yylex();
-extern int yyparse();
-
 char* input;
-
-void yyerror(const char* s);
+extern int yylex(YYSTYPE yylval);
+extern int yyparse();
+void yyerror(const char* msg);
 #ifdef YYSTYPE
 #undef  YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
 #endif
 #ifndef YYSTYPE_IS_DECLARED
 #define YYSTYPE_IS_DECLARED 1
-#line 14 "parser.y"
+#line 16 "parser.y"
 typedef union YYSTYPE {
     int token;
     const char* lexeme;
@@ -62,8 +62,8 @@ typedef union YYSTYPE {
 # define YYLEX_DECL() yylex(void *YYLEX_PARAM)
 # define YYLEX yylex(YYLEX_PARAM)
 #else
-# define YYLEX_DECL() yylex(void)
-# define YYLEX yylex()
+# define YYLEX_DECL() yylex(YYSTYPE yylval)
+# define YYLEX yylex(yylval)
 #endif
 
 #if !(defined(yylex) || defined(YYSTATE))
@@ -93,47 +93,47 @@ extern int YYPARSE_DECL();
 typedef int YYINT;
 static const YYINT yylhs[] = {                           -1,
     0,    0,    0,    0,    1,    1,    1,    1,    2,    2,
-    2,    2,
+    2,    2,    2,
 };
 static const YYINT yylen[] = {                            2,
     0,    3,    3,    1,    1,    2,    3,    3,    1,    1,
-    1,    1,
+    1,    1,    1,
 };
 static const YYINT yydefred[] = {                         0,
-    9,   10,   11,   12,    0,    0,    5,    0,    0,    0,
-    0,    6,    2,    0,    7,    8,
+   13,    9,   10,   11,   12,    0,    0,    5,    0,    0,
+    0,    0,    6,    2,    0,    7,    8,
 };
 #if defined(YYDESTRUCT_CALL) || defined(YYSTYPE_TOSTRING)
 static const YYINT yystos[] = {                           0,
-  262,  263,  264,  265,  267,  268,  269,  258,  259,  260,
-  261,  269,  267,  267,  269,  269,
+  256,  262,  263,  264,  265,  267,  268,  269,  258,  259,
+  260,  261,  269,  267,  267,  269,  269,
 };
 #endif /* YYDESTRUCT_CALL || YYSTYPE_TOSTRING */
-static const YYINT yydgoto[] = {                          5,
-    6,    7,
+static const YYINT yydgoto[] = {                          6,
+    7,    8,
 };
-static const YYINT yysindex[] = {                      -245,
-    0,    0,    0,    0, -246, -255,    0, -245, -245, -245,
- -245,    0,    0, -258,    0,    0,
+static const YYINT yysindex[] = {                      -244,
+    0,    0,    0,    0,    0, -245, -254,    0, -244, -244,
+ -244, -244,    0,    0, -258,    0,    0,
 };
 static const YYINT yyrindex[] = {                         1,
-    0,    0,    0,    0,    0,    3,    0,    1,    1,    0,
-    0,    0,    0,    4,    0,    0,
+    0,    0,    0,    0,    0,    0,    3,    0,    1,    1,
+    0,    0,    0,    0,    4,    0,    0,
 };
 #if YYBTYACC
 static const YYINT yycindex[] = {                         0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,
 };
 #endif
-static const YYINT yygindex[] = {                        13,
-    0,    5,
+static const YYINT yygindex[] = {                         6,
+    0,   15,
 };
 #define YYTABLESIZE 263
-static const YYINT yytable[] = {                          8,
-    1,    0,    4,    3,   10,   11,    1,    2,    3,    4,
-   12,    8,    9,    0,   15,   16,    1,    2,    3,    4,
-   13,   14,    0,    0,    0,    0,    0,    0,    0,    0,
+static const YYINT yytable[] = {                          9,
+    1,    1,    4,    3,    0,   11,   12,    2,    3,    4,
+    5,    1,    9,   10,   14,   15,    0,    2,    3,    4,
+    5,   13,    0,    0,    0,   16,   17,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -160,9 +160,9 @@ static const YYINT yytable[] = {                          8,
     4,    4,    3,
 };
 static const YYINT yycheck[] = {                        258,
-    0,   -1,    0,    0,  260,  261,  262,  263,  264,  265,
-    6,  258,  259,   -1,   10,   11,  262,  263,  264,  265,
-    8,    9,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+    0,  256,    0,    0,   -1,  260,  261,  262,  263,  264,
+  265,  256,  258,  259,    9,   10,   -1,  262,  263,  264,
+  265,    7,   -1,   -1,   -1,   11,   12,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
@@ -219,7 +219,7 @@ static const YYINT yyctable[] = {                        -1,
    -1,   -1,
 };
 #endif
-#define YYFINAL 5
+#define YYFINAL 6
 #ifndef YYDEBUG
 #define YYDEBUG 0
 #endif
@@ -253,6 +253,7 @@ static const char *const yyrule[] = {
 "arg : SING_QUOT",
 "arg : DOUB_QUOT",
 "arg : BACKQUOT",
+"arg : error",
 
 };
 #endif
@@ -384,10 +385,11 @@ static YYINT  *yylexp = 0;
 
 static YYINT  *yylexemes = 0;
 #endif /* YYBTYACC */
-#line 45 "parser.y"
+#line 46 "parser.y"
 
-void yyerror(const char* s) {
-    fprintf(stderr, "Error: %s at token '%s'\n", s, yylval.lexeme);
+void yyerror(const char* msg) {
+    fprintf(stderr, "Error: %s at token '%s'\n", msg, yylval.lexeme);
+    exit(EXIT_FAILURE);
 }
 
 int main(int argc, char* argv[]) {
@@ -399,7 +401,7 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-#line 403 "/Users/roger/Desktop/shell/build/parser.c"
+#line 405 "/Users/roger/Desktop/shell/build/parser.c"
 
 /* For use in generated program */
 #define yydepth (int)(yystack.s_mark - yystack.s_base)
@@ -1069,6 +1071,12 @@ yyreduce:
 
     switch (yyn)
     {
+case 13:
+#line 43 "parser.y"
+	{ yyerror("Invalid argument"); }
+#line 1078 "/Users/roger/Desktop/shell/build/parser.c"
+break;
+#line 1080 "/Users/roger/Desktop/shell/build/parser.c"
     default:
         break;
     }

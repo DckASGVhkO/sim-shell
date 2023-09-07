@@ -1,13 +1,17 @@
 %{
+#include "parser.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 char* input;
-extern int yylex();
+extern int yylex(YYSTYPE yylval);
 extern int yyparse();
-void yyerror(const char* s);
+void yyerror(const char* msg);
 %}
+
+%lex-param { YYSTYPE yylval }
 
 %union {
     int token;
@@ -20,7 +24,6 @@ void yyerror(const char* s);
 %left PIPE
 
 %%
-
 cmd : /* empty */
     | cmd PIPE cmd %prec PIPE
     | cmd SEQ cmd %prec SEQ
@@ -37,12 +40,13 @@ arg : ARG
     | SING_QUOT
     | DOUB_QUOT
     | BACKQUOT
+    | error { yyerror("Invalid argument"); }
     ;
-
 %%
 
-void yyerror(const char* s) {
-    fprintf(stderr, "Error: %s at token '%s'\n", s, yylval.lexeme);
+void yyerror(const char* msg) {
+    fprintf(stderr, "Error: %s at token '%s'\n", msg, yylval.lexeme);
+    exit(EXIT_FAILURE);
 }
 
 int main(int argc, char* argv[]) {
